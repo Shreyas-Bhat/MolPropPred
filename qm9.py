@@ -11,10 +11,10 @@ Original file is located at
 
 from collections import OrderedDict
 
-!wget http://deepchem.io.s3-website-us-west-1.amazonaws.com/datasets/gdb9.tar.gz
+#!wget http://deepchem.io.s3-website-us-west-1.amazonaws.com/datasets/gdb9.tar.gz
 
-from google.colab import drive
-drive.mount('/content/drive')
+# from google.colab import drive
+# drive.mount('/content/drive')
 
 # !wget -c https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 # !chmod +x Miniconda3-latest-Linux-x86_64.sh
@@ -40,7 +40,7 @@ import os
 sys.path.append('/usr/local/lib/python3.7/site-packages/')
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
-!pip install rdkit-pypi
+#!pip install rdkit-pypi
 
 from rdkit import Chem, DataStructs
 
@@ -92,7 +92,7 @@ print('final learning rate   : %.6f'%(LF))
 
 import numpy as np
 import pandas as pd
-qm9 = pd.read_csv('/content/drive/MyDrive/QM9 resources/data/qm9.csv')
+qm9 = pd.read_csv('data/qm9.csv')
 
 qm9.head()
 
@@ -448,7 +448,7 @@ for epoch in range(NUM_EPOCHS):
     print(accu_check)
 
 # DONT GO AHEAD#
-dfn
+#dfn
 
 for batch in range(0, TRAIN_SIZE, BATCH_SIZE):
         batch_loss = 0
