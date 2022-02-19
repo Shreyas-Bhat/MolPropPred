@@ -1,0 +1,10 @@
+scikit-learn
+rdkit-pypi
+deepchem
+matplotlib
+tensorflow
+ipykernel
+ipywidgets
+torch
+torchvision
+torchaudio
