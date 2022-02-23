@@ -1,5 +1,4 @@
 deepchem==2.5.0
-ipython==8.0.1
 ipywidgets==7.6.5
 matplotlib==3.3.4
 numpy==1.21.0
