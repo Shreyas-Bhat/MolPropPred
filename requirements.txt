@@ -1,10 +1,10 @@
 deepchem==2.5.0
-ipython==8.0.1
+ipython
 ipywidgets==7.6.5
 matplotlib==3.3.4
 numpy==1.19.5
 pandas==1.1.5
-rdkit==2009.Q1-1
 rdkit_pypi==2021.9.4
-scikit_learn==1.0.2
+scikit_learn
 torch==1.10.2
+tensorflow
