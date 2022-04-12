@@ -8,3 +8,4 @@ rdkit_pypi==2021.9.4
 scikit_learn
 torch==1.10.2
 tensorflow
+wandb
