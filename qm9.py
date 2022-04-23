@@ -19,11 +19,13 @@ from rdkit import Chem, DataStructs
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from collections import OrderedDict
 import matplotlib.pyplot as plt
+from torch.utils.tensorboard import SummaryWriter
+from cycler import cycler
 import sys
 import os
-import wandb
+# import wandb
 
-wandb.init(project="qm9", entity="qm9")
+# wandb.init(project="qm9", entity="qm9")
 
 """## Parameters """
 
@@ -36,13 +38,13 @@ P = 32     # dimensions of the output from the readout phase, the penultimate ou
 V = 12     # dimensions of the molecular targets or tasks
 
 # TRAIN_SIZE = 8000
-TRAIN_SIZE = 100000
+TRAIN_SIZE = 130000
 # VALID_SIZE = 1000
-VALID_SIZE = 30000
+VALID_SIZE = 3500
 # TEST_SIZE  = 1000
-TEST_SIZE = 23885
+TEST_SIZE = 23000
 BATCH_SIZE = 16
-NUM_EPOCHS = 30
+NUM_EPOCHS = 40
 
 save_path = 'weights.pth'
 
@@ -56,11 +58,11 @@ print('decay factor          : %.6f' % (DF))
 print('initial learning rate : %.6f' % (LR))
 print('final learning rate   : %.6f' % (LF))
 
-wandb.config = {
+'''wandb.config = {
     "learning_rate": LF,
     "epochs": 30,
     "batch_size": 16
-}
+}'''
 # from google.colab import files
 # uploaded = files.upload()
 
@@ -369,6 +371,31 @@ model = MPNN()
 optimizer = optim.Adam(model.parameters(), lr=LR)
 
 # construct_multigraph("C1(C)C(Br)C1")
+y_loss = {}  # loss history
+y_loss['train'] = []
+y_loss['val'] = []
+y_acc = {}
+for i in range(len(tasks)):
+    y_acc[tasks[i]] = []
+
+x_epoch = []
+#cm = plt.get_cmap('gist_rainbow')
+fig = plt.figure()
+ax0 = fig.add_subplot(121, title="loss")
+ax1 = fig.add_subplot(122, title="error")
+#ax1.set_color_cycle([cm(1.*i/len(tasks)) for i in range(len(tasks))])
+colors = plt.cm.Spectral(np.linspace(0,1,len(tasks)))
+ax1.set_prop_cycle('color', colors)
+def draw_curve(current_epoch):
+    x_epoch.append(current_epoch)
+    ax0.plot(x_epoch, y_loss['train'], 'bo-', label='train')
+    ax0.plot(x_epoch, y_loss['val'], 'ro-', label='val')
+    for i in range(len(tasks)):
+        ax1.plot(x_epoch, y_acc[tasks[i]], label= tasks[i])
+    if current_epoch == 0:
+        ax0.legend()
+        ax1.legend()
+    fig.savefig(os.path.join('./lossGraphs', 'train.jpg'))
 
 for epoch in range(NUM_EPOCHS):
     print("epoch [%d/%d]" % (epoch+1, NUM_EPOCHS))
@@ -399,6 +426,7 @@ for epoch in range(NUM_EPOCHS):
             batch_loss += batch_mse_loss(y_hat, y_tru)
             train_bar.value += 1
         train_loss += (batch_loss * scale_batch_to_train).detach()
+        
         batch_loss.backward()
         optimizer.step()
 
@@ -420,12 +448,22 @@ for epoch in range(NUM_EPOCHS):
         valid_bar.value += 1
     print('train_loss [%4.2f]' % (train_loss.item()))
     print('valid_loss [%4.2f]' % (valid_loss.item()))
-
-    wandb.log({"loss": train_loss, "validation loss": valid_loss, tasks[0]: accu_check[0][0], tasks[1]: accu_check[0][1],
+    y_loss['train'].append(train_loss.item())
+    y_loss['val'].append(valid_loss.item())
+    for i in range(len(tasks)):
+        y_acc[tasks[i]].append(accu_check[0][i])
+        
+    draw_curve(epoch)
+    
+    
+    '''wandb.log({"loss": train_loss, "validation loss": valid_loss, tasks[0]: accu_check[0][0], tasks[1]: accu_check[0][1],
                tasks[2]: accu_check[0][2], tasks[3]: accu_check[0][3], tasks[4]: accu_check[0][4],
                tasks[5]: accu_check[0][5], tasks[6]: accu_check[0][6], tasks[7]: accu_check[0][7],
                tasks[8]: accu_check[0][8], tasks[9]: accu_check[0][9], tasks[10]: accu_check[0][10],
                tasks[11]: accu_check[0][11]})
-    wandb.watch(model)
+    wandb.watch(model)'''
     torch.save(model.state_dict(), save_path)
     print(accu_check)
+
+
+
