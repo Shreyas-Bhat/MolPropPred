@@ -400,8 +400,8 @@ def draw_curve(current_epoch):
 for epoch in range(NUM_EPOCHS):
     print("epoch [%d/%d]" % (epoch+1, NUM_EPOCHS))
     train_loss = 0
-    train_bar = FloatProgress(min=0, max=TRAIN_SIZE)
-    display(train_bar)
+    '''train_bar = FloatProgress(min=0, max=TRAIN_SIZE)
+    display(train_bar)'''
     for batch in range(0, TRAIN_SIZE, BATCH_SIZE):
         batch_loss = 0
         optimizer.zero_grad()
@@ -433,8 +433,8 @@ for epoch in range(NUM_EPOCHS):
     valid_loss = 0
     accu_check = 0
     correct = 0
-    valid_bar = FloatProgress(min=0, max=VALID_SIZE)
-    display(valid_bar)
+    '''valid_bar = FloatProgress(min=0, max=VALID_SIZE)
+    display(valid_bar)'''
     for sample in range(VALID_SIZE):
         index = sample
         smile = X_val.iloc[index]['smiles']
