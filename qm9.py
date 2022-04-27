@@ -12,8 +12,8 @@ import torch.nn as nn
 import torch
 from deepchem.feat.graph_features import *
 from rdkit.Chem import AllChem
-from IPython.display import display
-from ipywidgets import FloatProgress
+#from IPython.display import display
+#from ipywidgets import FloatProgress
 import deepchem as dc
 from rdkit import Chem, DataStructs
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
