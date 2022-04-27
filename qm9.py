@@ -424,7 +424,7 @@ for epoch in range(NUM_EPOCHS):
                                    'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9', 'col10', 'col11', 'col12'])
                 dfn = dfn.append(df1)
             batch_loss += batch_mse_loss(y_hat, y_tru)
-            train_bar.value += 1
+            #train_bar.value += 1
         train_loss += (batch_loss * scale_batch_to_train).detach()
         
         batch_loss.backward()
@@ -445,7 +445,7 @@ for epoch in range(NUM_EPOCHS):
 
         accu_check += np.abs(scaler.inverse_transform(y_hat.detach()) -
                              scaler.inverse_transform(y_tru.detach())) / VALID_SIZE
-        valid_bar.value += 1
+        #valid_bar.value += 1
     print('train_loss [%4.2f]' % (train_loss.item()))
     print('valid_loss [%4.2f]' % (valid_loss.item()))
     y_loss['train'].append(train_loss.item())
