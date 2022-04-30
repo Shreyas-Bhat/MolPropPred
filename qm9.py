@@ -38,9 +38,9 @@ P = 32     # dimensions of the output from the readout phase, the penultimate ou
 V = 12     # dimensions of the molecular targets or tasks
 
 # TRAIN_SIZE = 8000
-TRAIN_SIZE = 130000
+TRAIN_SIZE = 100000
 # VALID_SIZE = 1000
-VALID_SIZE = 35000
+VALID_SIZE = 30000
 # TEST_SIZE  = 1000
 TEST_SIZE = 1000
 BATCH_SIZE = 16
