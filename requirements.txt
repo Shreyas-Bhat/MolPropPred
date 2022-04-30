@@ -1,8 +1,6 @@
-deepchem==2.5.0
-ipython
-ipywidgets==7.6.5
+numpy
+deepchem
 matplotlib==3.3.4
-numpy==1.19.5
 pandas==1.1.5
 rdkit_pypi==2021.9.4
 scikit_learn
