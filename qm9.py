@@ -42,7 +42,7 @@ TRAIN_SIZE = 130000
 # VALID_SIZE = 1000
 VALID_SIZE = 35000
 # TEST_SIZE  = 1000
-TEST_SIZE = 23000
+TEST_SIZE = 1000
 BATCH_SIZE = 16
 NUM_EPOCHS = 40
 
@@ -114,10 +114,10 @@ y = pd.DataFrame(scaler.fit_transform(y), index=y.index, columns=y.columns)
 y.describe()
 
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=TEST_SIZE, random_state=143)
+'''X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=TEST_SIZE, random_state=143)'''
 X_train, X_val, y_train, y_val = train_test_split(
-    X_train, y_train, test_size=VALID_SIZE, random_state=143)
+    X, y, test_size=VALID_SIZE, random_state=143)
 
 dfn = pd.DataFrame(columns=['col1', 'col2', 'col3', 'col4', 'col5',
                    'col6', 'col7', 'col8', 'col9', 'col10', 'col11', 'col12'])
