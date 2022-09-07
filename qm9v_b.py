@@ -9,10 +9,10 @@ Original file is located at
 
 from collections import OrderedDict
 
-!wget http://deepchem.io.s3-website-us-west-1.amazonaws.com/datasets/gdb9.tar.gz
+'''!wget http://deepchem.io.s3-website-us-west-1.amazonaws.com/datasets/gdb9.tar.gz
 
 from google.colab import drive
-drive.mount('/content/drive')
+drive.mount('/content/drive')'''
 
 # Commented out IPython magic to ensure Python compatibility.
 # %matplotlib inline
@@ -39,12 +39,12 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-!git clone https://github.com/Shreyas-Bhat/SMoleculeQM9.git
+#!git clone https://github.com/Shreyas-Bhat/SMoleculeQM9.git
 
 # Commented out IPython magic to ensure Python compatibility.
 # %cd /content/SMoleculeQM9
 
-!python qm9.py
+#!python qm9.py
 
 """## Parameters """
 
@@ -64,6 +64,8 @@ VALID_SIZE = 10000
 TEST_SIZE  = 23885
 BATCH_SIZE = 20
 NUM_EPOCHS = 3
+
+save_path = 'weightsv_b.pth'
 
 DF = np.random.uniform(0.01, 1)
 LR = np.random.uniform(1e-5, 5e-4)
@@ -376,7 +378,33 @@ optimizer = optim.Adam(model.parameters(), lr=LR)
 # construct_multigraph("C1(C)C(Br)C1")
 construct_multigraph("C1NCN1.C1NCN1")
 
+y_loss = {}  # loss history
+y_loss['train'] = []
+y_loss['val'] = []
+y_acc = {}
+for i in range(len(tasks)):
+    y_acc[tasks[i]] = []
 
+x_epoch = []
+#cm = plt.get_cmap('gist_rainbow')
+fig = plt.figure()
+ax0 = fig.add_subplot(121, title="loss")
+ax1 = fig.add_subplot(122, title="error")
+#ax1.set_color_cycle([cm(1.*i/len(tasks)) for i in range(len(tasks))])
+colors = plt.cm.Spectral(np.linspace(0, 1, len(tasks)))
+ax1.set_prop_cycle('color', colors)
+
+
+def draw_curve(current_epoch):
+    x_epoch.append(current_epoch)
+    ax0.plot(x_epoch, y_loss['train'], 'bo-', label='train')
+    ax0.plot(x_epoch, y_loss['val'], 'ro-', label='val')
+    for i in range(len(tasks)):
+        ax1.plot(x_epoch, y_acc[tasks[i]], label=tasks[i])
+    if current_epoch == 0:
+        ax0.legend()
+        ax1.legend()
+    fig.savefig(os.path.join('./lossGraphs', 'trainv_b.jpg'))
 
 for epoch in range(NUM_EPOCHS):
     print("epoch [%d/%d]"%(epoch+1, NUM_EPOCHS))
@@ -424,3 +452,9 @@ for epoch in range(NUM_EPOCHS):
     print('train_loss [%4.2f]'%(train_loss.item()))
     print('valid_loss [%4.2f]'%(valid_loss.item()))
     print(accu_check)
+    y_loss['train'].append(train_loss.item())
+    y_loss['val'].append(valid_loss.item())
+    for i in range(len(tasks)):
+        y_acc[tasks[i]].append(accu_check[0][i])
+    torch.save(model.state_dict(), save_path)
+    draw_curve(epoch)

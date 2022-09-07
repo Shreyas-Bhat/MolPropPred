@@ -23,9 +23,9 @@ from torch.utils.tensorboard import SummaryWriter
 from cycler import cycler
 import sys
 import os
-# import wandb
+import wandb
 
-# wandb.init(project="qm9", entity="qm9")
+wandb.init(project="qm9", entity="qm9")
 
 """## Parameters """
 
@@ -40,7 +40,7 @@ V = 12     # dimensions of the molecular targets or tasks
 # TRAIN_SIZE = 8000
 TRAIN_SIZE = 100000
 # VALID_SIZE = 1000
-VALID_SIZE = 30000
+VALID_SIZE = 10000
 # TEST_SIZE  = 1000
 TEST_SIZE = 1000
 BATCH_SIZE = 16
@@ -58,11 +58,11 @@ print('decay factor          : %.6f' % (DF))
 print('initial learning rate : %.6f' % (LR))
 print('final learning rate   : %.6f' % (LF))
 
-'''wandb.config = {
+wandb.config = {
     "learning_rate": LF,
     "epochs": 30,
     "batch_size": 16
-}'''
+}
 # from google.colab import files
 # uploaded = files.upload()
 
@@ -384,85 +384,29 @@ fig = plt.figure()
 ax0 = fig.add_subplot(121, title="loss")
 ax1 = fig.add_subplot(122, title="error")
 #ax1.set_color_cycle([cm(1.*i/len(tasks)) for i in range(len(tasks))])
-colors = plt.cm.Spectral(np.linspace(0, 1, len(tasks)))
-ax1.set_prop_cycle('color', colors)
 
 
-def draw_curve(current_epoch):
-    x_epoch.append(current_epoch)
-    ax0.plot(x_epoch, y_loss['train'], 'bo-', label='train')
-    ax0.plot(x_epoch, y_loss['val'], 'ro-', label='val')
-    for i in range(len(tasks)):
-        ax1.plot(x_epoch, y_acc[tasks[i]], label=tasks[i])
-    if current_epoch == 0:
-        ax0.legend()
-        ax1.legend()
-    fig.savefig(os.path.join('./lossGraphs', 'train.jpg'))
+valid_loss = 0
+accu_check = 0
+correct = 0
+model.load_state_dict(torch.load('weights.pth'))
+for sample in range(VALID_SIZE):
+    index = sample
+    smile = X_val.iloc[index]['smiles']
+    y_hat = model(smile)
+    y_tru = torch.Tensor(y_val.iloc[index].values.reshape(1, V))
+    valid_loss += valid_mse_loss(y_hat, y_tru)
+    correct += (y_tru == y_hat).sum().item()
 
+    accu_check += np.abs(scaler.inverse_transform(y_hat.detach()) -
+                         scaler.inverse_transform(y_tru.detach())) / VALID_SIZE
 
-for epoch in range(NUM_EPOCHS):
-    print("epoch [%d/%d]" % (epoch+1, NUM_EPOCHS))
-    train_loss = 0
-    '''train_bar = FloatProgress(min=0, max=TRAIN_SIZE)
-    display(train_bar)'''
-    for batch in range(0, TRAIN_SIZE, BATCH_SIZE):
-        batch_loss = 0
-        optimizer.zero_grad()
-        for sample in range(BATCH_SIZE):
-            # print(index)
-            index = sample + batch
-            print(index)
-            smile = X_train.iloc[index]['smiles']
-            # print('beep1')
-            y_hat = model(smile)
-            # print('beep1')
-            y_tru = torch.Tensor(y_train.iloc[index].values.reshape(1, V))
-            print("y_train[index]: ", y_train.iloc[index])
-            y_hat1 = y_hat
-            print("y_hat: ", y_hat1.reshape(V, 1))
-#             df.loc[len(df)] = y_hat
-            if(epoch == 2):
-                y_hat1 = y_hat.detach().numpy()
-                df1 = pd.DataFrame(y_hat1, columns=[
-                                   'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9', 'col10', 'col11', 'col12'])
-                dfn = dfn.append(df1)
-            batch_loss += batch_mse_loss(y_hat, y_tru)
-            #train_bar.value += 1
-        train_loss += (batch_loss * scale_batch_to_train).detach()
-
-        batch_loss.backward()
-        optimizer.step()
-
-    valid_loss = 0
-    accu_check = 0
-    correct = 0
-    '''valid_bar = FloatProgress(min=0, max=VALID_SIZE)
-    display(valid_bar)'''
-    for sample in range(VALID_SIZE):
-        index = sample
-        smile = X_val.iloc[index]['smiles']
-        y_hat = model(smile)
-        y_tru = torch.Tensor(y_val.iloc[index].values.reshape(1, V))
-        valid_loss += valid_mse_loss(y_hat, y_tru)
-        correct += (y_tru == y_hat).sum().item()
-
-        accu_check += np.abs(scaler.inverse_transform(y_hat.detach()) -
-                             scaler.inverse_transform(y_tru.detach())) / VALID_SIZE
-        #valid_bar.value += 1
-    print('train_loss [%4.2f]' % (train_loss.item()))
-    print('valid_loss [%4.2f]' % (valid_loss.item()))
-    y_loss['train'].append(train_loss.item())
-    y_loss['val'].append(valid_loss.item())
-    for i in range(len(tasks)):
-        y_acc[tasks[i]].append(accu_check[0][i])
-
-    draw_curve(epoch)
-
-    '''wandb.log({"loss": train_loss, "validation loss": valid_loss, tasks[0]: accu_check[0][0], tasks[1]: accu_check[0][1],
+    wandb.log({tasks[0]: accu_check[0][0], tasks[1]: accu_check[0][1],
                tasks[2]: accu_check[0][2], tasks[3]: accu_check[0][3], tasks[4]: accu_check[0][4],
                tasks[5]: accu_check[0][5], tasks[6]: accu_check[0][6], tasks[7]: accu_check[0][7],
                tasks[8]: accu_check[0][8], tasks[9]: accu_check[0][9], tasks[10]: accu_check[0][10],
                tasks[11]: accu_check[0][11]})
-    wandb.watch(model)'''
-    torch.save(model.state_dict(), save_path)
+
+    wandb.watch(model)
+
     print(accu_check)
