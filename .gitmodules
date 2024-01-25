@@ -1,0 +1,3 @@
+[submodule "QM9Tool"]
+	path = QM9Tool
+	url = https://github.com/MrunmayS/QM9Tool
