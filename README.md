@@ -6,7 +6,7 @@ This repo uses git submodules for the QM9Tool.
 Therefore, you need to clone the repository with `--recurse-submodules`.
 
 ```
-git clone --recurse-submodules https://github.com/rnayabed/rangoli.git
+git clone --recurse-submodules https://github.com/Shreyas-Bhat/SMoleculeQM9
 ```
 
 In case you forget to do that, you need to run the following command:
