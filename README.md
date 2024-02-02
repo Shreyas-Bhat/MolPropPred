@@ -15,7 +15,7 @@ In case you forget to do that, you need to run the following command:
 git submodule update --init
 ```
  
-The tool can be accessed in `QM9Tool` folder or [repo](https://github.com/MrunmayS/QM9Tool)
+The tool can be accessed in `QM9Tool` folder if cloned using git or downloaded zip from the [repo](https://github.com/MrunmayS/QM9Tool)
 ## QMTool V0.1
 
 
