@@ -1,4 +1,5 @@
-# SMoleculeQM9
+# MolPropPred
+
 
 ### Clone
 
@@ -6,7 +7,7 @@ This repo uses git submodules for the QM9Tool.
 Therefore, you need to clone the repository with `--recurse-submodules`.
 
 ```
-git clone --recurse-submodules https://github.com/Shreyas-Bhat/SMoleculeQM9
+git clone --recurse-submodules https://github.com/Shreyas-Bhat/MolPropPred
 ```
 
 In case you forget to do that, you need to run the following command:
