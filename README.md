@@ -3,7 +3,7 @@
 
 ### Clone
 
-This repo uses git submodules for the QM9Tool. 
+This repo uses git submodules for the MolPropPredTool. 
 Therefore, you need to clone the repository with `--recurse-submodules`.
 
 ```
@@ -16,8 +16,8 @@ In case you forget to do that, you need to run the following command:
 git submodule update --init
 ```
  
-The tool can be accessed in `QM9Tool` folder if cloned using git or downloaded zip from the [repo](https://github.com/MrunmayS/QM9Tool)
-## QMTool V0.1
+The tool can be accessed in `MolPropPredTool` folder if cloned using git or downloaded zip from the [repo](https://github.com/MrunmayS/MolPropPredTool)
+## QMolPropPredTool V0.1
 
 
 ### Prerequisites
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 ```
 -------------------------------------------------------------------------------
 
-## QM9Tool Usage :
+## QMolPropPredTool Usage :
 
 ```bash
 python3 main.py <SMILE-string>
