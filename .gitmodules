@@ -1,3 +1,3 @@
-[submodule "MolPropPred"]
-	path = MolPropPred
-	url = https://github.com/MrunmayS/MolPropPred
+[submodule "MolPropPredTool"]
+	path = MolPropPredTool
+	url = https://github.com/MrunmayS/MolPropPredTool
